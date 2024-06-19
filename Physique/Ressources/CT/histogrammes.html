@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# # Création d'histogrammes
+
+# In[4]:
+
+
+## Import de la bibliothèque de tracés graphiques Matplotlib
+import matplotlib.pyplot as plt
+
+## Données dont on veut un histogramme, sous forem de liste de valeurs
+data = [381.75, 381.84, 381.87, 381.88, 381.9, 381.97, 381.97, 382., 382.03, 382.05
+, 382.05, 382.09, 382.09, 382.09, 382.1, 382.11, 382.12, 382.13, 382.14, 382.17
+, 382.19, 382.2, 382.2, 382.2, 382.22, 382.22, 382.23, 382.25, 382.25, 382.26
+, 382.29, 382.31, 382.31, 382.32, 382.34, 382.34, 382.36, 382.37, 382.38, 382.39
+, 382.39, 382.39, 382.39, 382.41, 382.41, 382.41, 382.42, 382.43, 382.44, 382.45
+, 382.45, 382.46, 382.46, 382.46, 382.47, 382.51, 382.52, 382.52, 382.53, 382.53
+, 382.53, 382.54, 382.55, 382.59, 382.59, 382.62, 382.63, 382.63, 382.64, 382.65
+, 382.66, 382.67, 382.68, 382.7, 382.7, 382.72, 382.72, 382.74, 382.74, 382.77
+, 382.77, 382.8, 382.81, 382.81, 382.82, 382.84, 382.87, 382.89, 382.9, 382.92
+, 382.98, 383.,  383.02, 383.03, 383.06, 383.07, 383.08, 383.13, 383.17, 383.2
+, 383.3, 383.36, 383.41, 383.5, 383.69, 383.75]
+
+## Début de la figure
+plt.figure()
+
+## Tracé de l'histogramme ; « bins ='rice' » est l'option permettant 
+## de déterminer automatiquement les classes
+plt.hist(data, bins='rice') 
+
+## Titre des axes
+plt.xlabel('valeurs')
+plt.ylabel('effectifs')
+
+## Affichage de la figure
+plt.show()
+
+
+# In[ ]:
+
+
+
+

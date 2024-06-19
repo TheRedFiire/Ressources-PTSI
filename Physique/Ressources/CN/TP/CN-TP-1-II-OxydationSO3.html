@@ -1,0 +1,64 @@
+import matplotlib.pyplot as plt # fonctions de trace
+from math import exp # fonction exponentielle necessaire
+
+#equation de la réaction : 2 SO2(g) + O2(g) = 2 SO3(g)
+
+#quantités initiales : 2 mol de dioxyde de soufre et 1 mol de dioxygène
+n1=2 ; #en mol ;    SO2
+n2=1 ; #en mol ;    O2
+n3=0 ; #en mol ;    SO3
+
+P=1; #en bar
+
+#précision sur xi_eq
+eps=1e-3; #en mol
+
+def ko(T):
+    # renvoie la valeur de la constante thermodynamique d'equilibre à la temperature T
+    return exp((198000-188*T)/(8.31*T))
+
+def Qr(xi):
+    # renvoie la valeur du quotient reactionnel pour l'avancement xi a la pression P 
+    #et pour des quantites de matiere initiales données
+    return ((n3+2*xi)**2)*((n1+n2+n3)-xi)/((n1-2*xi)**2*(n2-xi)*P)
+
+def xi_eq(T):
+    #renvoie l'avancement de la reaction a l'equilibre en cherchant par dichotomie la solution de l'equation Q - K = 0
+    #on détermine ximax
+    xmax=min(n1/2,n2);
+    # Initialisation des variables
+    xi1 = 0 # xi minimal nul
+    xi2 = xmax-eps # xi maximal = xmax (mais le quotient reactionnel diverge en xmax)
+    xi_m = 0.5*(xi1+xi2) # on commence par tester l'avancement ksi = 0.5 mol
+    K = ko(T) # valeur de la constante thermodynamique d'equilibre a T
+
+    while abs(xi2-xi1) > eps: # condition d'arret
+        xi_m=(xi1+xi2)/2 # nouveau milieu de l'intervalle
+        Q = Qr(xi_m) # nouvelle valeur de Q pour le milieu de l'intervalle
+        if Q > K: # si le quotient reactionnel est superieur a K, l'avancement a l'equilibre est a chercher a gauche
+            xi2 = xi_m # on garde la borne inf et on change la borne sup
+        else:     # sinon on cherche a droit  
+            xi1 = xi_m # on garde la borne sup et on change la borne inf    
+    return xi_m
+
+
+## Corps principal
+# Trace en fonction de la temperature entre 600 et 1500 K (un point tous les 10 K)
+Tmin=400;
+Tmax=1500;
+dT=10;
+Temperatures = [T for T in range(Tmin,Tmax,dT)] # liste des abscisses
+alpha = [] # liste vide des ordonnees
+for T in Temperatures:
+    alpha.append(2*xi_eq(T)/n1) # ajout successif des valeurs de l'avancement a l'equilibre dans la liste des ordonnees
+
+plt.plot(Temperatures,alpha) # trace du nuage de points
+
+# titres des axes et du graphique
+plt.ylabel("taux de dissociation $\\alpha$")
+plt.xlabel("temperature (K)")
+plt.title("Influence de la temperature sur l'oxydation de $SO_2$")
+plt.grid()
+plt.show()
+
+

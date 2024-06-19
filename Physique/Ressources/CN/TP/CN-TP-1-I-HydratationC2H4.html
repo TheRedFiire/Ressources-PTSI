@@ -1,0 +1,55 @@
+#Hydratation de l'ethylène
+#equation de la réaction : C2H4(g) + H2O(g) = C2H5OH(g)
+
+
+#quantités initiales : 
+n1i=1  #en mol ; C2H4
+n2i=1  #en mol ; H2O
+n3i=1  #en mol ; C2H5OH
+nti=n1i+n2i+n3i #quantité de matière gazeuse initiale
+
+#Constantes
+P=70 #en bar
+K=4e-3
+pxi=1e-3 #en mol ; pas d'avancement sur xi_eq
+
+#Affichage du mélange initial
+print("La composition initiale du mélange est :")
+print("\t C2H4 \t",format(n1i,'.3f')," mol")
+print("\t H2O \t",format(n2i,'.3f')," mol")
+print("\t C2H5OH \t",format(n3i,'.3f')," mol")
+
+def Qr(xi):
+    # renvoie l'avancement de la réaction en fonction de l'avancement xi
+    return (n3i+xi)*(nti-xi)/((n1i-xi)*(n2i-xi))*(1/P)
+
+#Quotient Initial
+Qri=Qr(0)
+print("\nInitialement, le quotient réactionnel vaut ",format(Qri,'.3f')," et K = ",K)
+if (Qri<K) :
+    print("comme Qri<K, la réaction avance")
+    sens=1
+elif (Qri>K) :
+    print("comme Qri>K, la réaction recule")
+    sens=-1
+else:
+    print("le mélange initial est déjà à l'équilibre")
+
+#Calcul de l'avancement à l'équilibre
+xieq=0
+while ((Qr(xieq)-K)*sens<0) : #tant que l'équilibre n'est pas atteint
+    #print("xi = ",xieq," Qr = ",Qr(xieq))
+    xieq+=sens*pxi
+
+#print("xieq = ",xieq," Qr = ",Qr(xieq))
+    
+#Affichage de l'état du mélange à l'équilibre
+xieq=xieq-0.5*sens*pxi
+print("\nL'avancement à l'équilibre est de ",format(xieq,'.3f'), "mol")
+print("La composition du mélange est alors :")
+print("\t C2H4 \t",format(n1i-xieq,'.3f')," mol")
+print("\t H2O \t",format(n2i-xieq,'.3f')," mol")
+print("\t C2H5OH \t",format(n3i+xieq,'.3f')," mol")
+
+
+

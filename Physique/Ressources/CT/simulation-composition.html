@@ -1,0 +1,85 @@
+## Bibliothèques utiles
+import numpy as np
+import numpy.random as rd
+import matplotlib.pyplot as plt
+
+## Définitions des paramètres des modèles de x et y
+etendue_x = 6
+valeur_centrale_x = 123
+etendue_y = 12
+valeur_centrale_y = 98
+
+## Nombre de tirages
+nombre_de_tirages = 10000
+
+## Tirages des valeurs aléatoires de x selon un modèle rectangulaire
+valeurs_x = valeur_centrale_x + rd.uniform(-etendue_x/2,etendue_x/2,nombre_de_tirages)
+valeur_moyenne_x_MC = np.average(valeurs_x)
+u_x_MC = np.std(valeurs_x,ddof=1)
+
+## Tirages des valeurs aléatoires de y selon un modèle rectangulaire
+valeurs_y = valeur_centrale_y + rd.uniform(-etendue_y/2,etendue_y/2,nombre_de_tirages)
+valeur_moyenne_y_MC = np.average(valeurs_y)
+u_y_MC = np.std(valeurs_y,ddof=1)
+
+## Valeurs et statistiques sur les valeurs de z simulées
+valeurs_z_MC = valeurs_x*valeurs_y
+valeur_moyenne_z_MC = np.average(valeurs_z_MC)
+u_z_MC = np.std(valeurs_z_MC,ddof=1)
+
+## Dans cet exemple simple on peut comparer la simulation à la théorie
+## grâce à la formule de propagation d'incertitudes pour les produits
+x_theorie = valeur_centrale_x
+y_theorie = valeur_centrale_y
+z_theorie = valeur_centrale_x*valeur_centrale_y
+u_x_theorie = etendue_x/2/np.sqrt(3)
+u_y_theorie = etendue_y/2/np.sqrt(3)
+u_z_theorie = z_theorie*np.sqrt((u_x_theorie/x_theorie)**2+(u_y_theorie/y_theorie)**2)
+
+## Affichage de quelques résultats
+print("moyenne_x_MC =",valeur_moyenne_x_MC)
+print("valeur centrale de x =", valeur_centrale_x)
+print("incertitude-type_x_MC =",u_x_MC)
+print("incertitude-type_x_théorie =",u_x_theorie)
+
+print("moyenne_y_MC =",valeur_moyenne_y_MC)
+print("valeur centrale de y =", valeur_centrale_y)
+print("incertitude-type_y_MC =",u_y_MC, "pour")
+print("incertitude-type_y_théorie =",u_y_theorie)
+
+print("moyenne_z_MC =",valeur_moyenne_z_MC)
+print("z en théorie =", z_theorie)
+print("incertitude-type_z_MC =",u_z_MC)
+print("incertitude-type_z_théorie =",u_z_theorie)
+
+
+##########################
+## Création d'un graphique
+plt.figure(figsize=(8,8))
+
+# Titre de la figure pou x
+plt.title("Simulation de la variabilité de $z = xy$ pour "+\
+          str(nombre_de_tirages)+"\n tirages de $x$ et $y$ selon des modèles rectangulaires")
+
+## Préparation de l'histogramme et récupérations des données utiles
+n_z,bins_z,patches_z=plt.hist(valeurs_z_MC,bins='rice',color='blue',histtype='step')
+
+## Tracés des résultats simulés
+# Tracé de la valeur moyenne
+plt.plot((valeur_moyenne_z_MC,valeur_moyenne_z_MC), (0,np.max(n_z)),color='red',label="Valeur moyenne")
+
+# Tracés des lignes à plus ou moins un écart-type
+plt.plot((valeur_moyenne_z_MC+u_z_MC,valeur_moyenne_z_MC+u_z_MC), (0,np.max(n_z)),\
+        color='orange', linestyle='dashed',label="Valeur moyenne plus ou moins un écart-type")
+plt.plot((valeur_moyenne_z_MC-u_z_MC,valeur_moyenne_z_MC-u_z_MC), (0,np.max(n_z)),\
+        color='orange', linestyle='dashed')
+# Légende, titres des axes
+plt.legend()
+plt.xlabel("Valeurs")
+plt.ylabel("Effectifs")
+
+## En registrement de la figure 
+plt.savefig("../Images/composition-z-xy-"+str(nombre_de_tirages)+".png", dpi = 300)
+# Affichage de la figure à l'écran
+plt.show()
+##########################

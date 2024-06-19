@@ -1,0 +1,42 @@
+## Importation des bibliothèques utiles
+
+import numpy as np
+import matplotlib.pyplot as plt
+#%matplotlib inline
+
+## Saisie des données du problème
+
+### Constantes utiles
+
+E = 1                       # amplitude de la tension u (valeur arbitraire, en V)
+f = 50                      # fréquence de la tension u (en Hz)
+T = 1/f                     # période correspondante (en s)
+
+## Implémentation de la méthode d'Euler explicite  ->  A COMPLETER
+
+
+
+
+
+### Définition du signal u
+
+def u(t):
+  """ 
+  Cette fonction permet de calculer la valeur instantanée de la tension u.
+  Entrée : instant t (flottant unique ou array numpy de flottants)
+  Sortie : tension u (flottant unique ou array numpy de flottants)
+  """
+  d = t/T - int(t/T)               # partie décimale de t/T
+  if 0 <= d < 1/2:          
+    return E
+  else:
+    return -E
+
+### Représentation graphique
+t = np.linspace(0, 4*T, 800)
+plt.figure(figsize = (12,2.5))
+plt.plot(t, [u(val) for val in t], 'r-')
+plt.xlim(0, 4*T), plt.xlabel(r"$t$ (en s)")
+plt.ylim(-1.1*E, 1.1*E), plt.ylabel(r"$u\left(t\right)$ (en V)")
+plt.grid()
+plt.show()

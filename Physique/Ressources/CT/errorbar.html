@@ -1,0 +1,18 @@
+## Importation des bibliothèques utiles
+import numpy as np                    # pour le traitement vectoriel des données
+import matplotlib.pyplot as plt       # pour les graphiques
+
+## Saisie des données expérimentales
+v_mesure = np.array([10.3,21.08,28.92,39.7])     # vitesses mesurées en m/s
+t_mesure = np.array([0.99,2.06,3.05,3.98])       # temps mesurés en s
+u_v = 5/2/np.sqrt(3)                             # incertitude-type sur le vitesses en m/s
+u_t = 0.5/2/np.sqrt(3)                           # incertitude-type sur les temps en s
+
+
+plt.figure()                                  # création d'une figure
+plt.errorbar(t_mesure, v_mesure, xerr=u_t, yerr=u_v, fmt= 'oc', label = "Points expérimentaux et barres d'incertitudes")
+plt.xlabel("$t$ (s)")                         # axe des abscisses
+plt.ylabel("$v$ (m/s)")                       # axe des ordonnées
+plt.grid(), plt.legend(loc = 0)               # quadrillage en arrière-plan et légende
+plt.title("Étude d'une relation vitesse-temps")
+plt.show()

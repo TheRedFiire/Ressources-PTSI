@@ -1,0 +1,60 @@
+import matplotlib.pyplot as plt # fonctions de trace
+from math import exp # fonction exponentielle necessaire
+
+#equation de la réaction : 2 SO2(g) + O2(g) = 2 SO3(g)
+#quantités initiales : 2 mol de dioxyde de soufre et 1 mol de dioxygène
+n1=2 ; #en mol ; SO2
+n2=1 ; #en mol ; O2
+n3=0 ; #en mol ; SO3
+
+P=1; #en bar
+
+#précision sur xi_eq
+eps=1e-3; #en mol
+
+def ko(T):
+    # renvoie la valeur de la constante thermodynamique d'equilibre à la temperature T
+    return #a remplir
+
+def Qr(xi):
+    # renvoie la valeur du quotient reactionnel pour l'avancement xi a la pression P et pour des quantites de matiere initiales n1, n2, n3
+    return #a remplir
+
+def xi_eq(T):
+    #renvoie l'avancement de la reaction a l'equilibre en cherchant par dichotomie la solution de l'equation Q - K = 0
+    #xi1 : borne inférieure de l'intervalle contenant la solution
+    #xi2 : borne supérieure de l'intervalle contenant la solution
+    #on détermine ximax
+    ximax= #a remplir
+    # Initialisation des variables
+    xi1 = eps # xi minimal nul
+    xi2 = xmax-eps # xi maximal = xmax (mais le quotient reactionnel diverge en ximax)
+    
+    K = ko(T) # valeur de la constante thermodynamique d'equilibre a T
+    #a remplir en appliquant la méthode de dichotomie
+    
+    
+    
+    return #a remplir
+
+
+# Trace en fonction de la temperature entre 600 et 1500 K (un point tous les 10 K)
+#abscisse : Temperature
+#ordonnée : taux de dissociation alpha
+Tmin=400;   #abscisse minimale du graphe
+Tmax=1500;  #abscisse maximale du graphe
+dT=10;      #on trace un point tous les dT en abscisses
+Temperatures = [T for T in range(Tmin,Tmax,dT)] # liste des abscisses
+alpha = [] # liste vide des ordonnees
+for T in Temperatures:
+    alpha.append(#a remplir) # ajout successif des valeurs de l'avancement a l'equilibre dans la liste des ordonnees
+
+plt.plot(Temperatures,alpha) # trace du nuage de points
+
+# titres des axes et du graphique
+plt.ylabel('')  #a compléter
+plt.xlabel('')  #a compléter
+plt.title('')   #a compléter
+plt.grid()
+plt.show()
+

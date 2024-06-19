@@ -1,0 +1,100 @@
+
+"""
+CHARGE D'UN CIRCUIT RC PAR LA METHODE D'EULER
+
+"""
+
+## Importation des bibliothèques utiles
+## ------------------------------------
+
+import numpy as np                  # pour la manipulation des tableaux
+import matplotlib.pyplot as plt     # pour les représentations graphiques
+
+
+## Implémentation de la méthode d'Euler explicite
+## ----------------------------------------------
+
+def euler(F, y0, t0, tf, dt):
+  """ 
+  Résout le problème de Cauchy y'(t)=F(y(t),t) avec y(0)=y0 par la méthode 
+  d'Euler explicite.
+  Arguments d'entrée : 
+    - F : fonction donnant y' (fonction de 2 variables) ;
+    - y0 : condition initiale sur y (flottant) ;
+    - t0 et tf : bornes de l'intervalle de résolution (flottants) ;
+    - dt : pas de discrétisation utilisé pour la résolution (flottant).
+  Variables de sortie :
+    - t : vecteur contenant l'ensemble des instants tk (array numpy) ;
+    - y : vecteur contenant l'ensemble des valeurs approchées yk (array numpy).
+  """
+  # Initialisation des variables de sortie
+  t = np.arange(t0, tf+dt, dt)   # la dernière valeur est dans [tf,tf+dt[
+  N = len(t)                     
+  y = np.zeros(N)                # initialisation du array y
+  y[0] = y0                      # prise en compte de la CI
+
+  # Boucle permettant le calcul des yk par récurrence  
+  for k in range(0,N-1):
+    y[k+1] = y[k] + F(y[k],t[k])*dt
+    
+  return t, y # retourne un tableau contenant les temps tk
+              # et un tableau contenant les valeurs approchées yk
+
+
+## Application à la charge d'un circuit RC
+## ---------------------------------------
+
+# Définition des constantes utiles
+E = 6      # en volt
+R = 1000    # en ohm
+C = 1E-9    # en farad      
+u0 = 0      # condition initiale en volt
+tau = R*C   # en seconde
+
+# bornes de l'intervalle de résolution
+# 5*tau est un exemple
+t0, tf = 0, 5*tau      
+t_ex = np.linspace(t0, tf, 100) # vecteur temps
+
+
+# Définition des fonctions 
+
+def F(u, t):
+    """
+    Fonction explicitant du/dt en fonction de u et t.
+    On a F(u(t),t) = du/dt = ????????????????????
+    """
+    return ??????????????????????
+        
+def u_exacte(t):
+    """
+    Expression analytique de la solution exacte (forme adimensionnée, correspondant à la
+    condition initiale u(0) = u0).
+    """ 
+    return ??????????????????
+
+u_ex = u_exacte(t_ex)             # calcul de la solution exacte
+
+# Résolution  - Représentation graphique
+
+plt.figure(figsize=(14,8))          # création d'une fenêtre graphique
+
+plt.plot(t_ex, u_ex, '-', label = "Solution exacte")   # tracé de la solution exacte
+
+for N in [1, 0.1, 0.01]:           # pour différentes valeurs du pas
+  dt=N*tau
+  t, u = euler(F, u0, t0, tf, dt)   # résolution par la méthode d'Euler
+  plt.plot(t, u, '--', label = r"Solution correspondant au pas $\delta t$ = "+str(N)+"τ")    
+                                    # puis représentation graphique
+plt.ticklabel_format(style='plain')
+plt.title("Simulation par la méthode d'Euler explicite, pour un échelon avec :\n$E$ = "+str(E)+" V ; $u(t_0)$ = "+str(u0)+\
+          " V ; R = "+str(R)+" $\Omega$ ; C = "+str(C)+" F")
+          
+plt.xlim(t0,tf), plt.xlabel(r"$t$ (s)")   # habillage de l'axe des abscisses
+plt.ylim(1.05*min(u),1.05*max(u)), plt.ylabel(r"$u$ (V)")     # habillage de l'axe des ordonnées
+plt.legend(loc = 'lower right')     # affichage de la légende
+plt.grid()
+titre_fichier='./Courbes/simulationEu0RC-'+str(E)+'-'+str(u0)+'-'+str(R)+'-'+str(C)+'.pdf'
+plt.savefig(titre_fichier,dpi=300)
+plt.show()
+

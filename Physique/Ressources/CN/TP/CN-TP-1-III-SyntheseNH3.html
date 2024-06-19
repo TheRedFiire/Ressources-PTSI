@@ -1,0 +1,84 @@
+import matplotlib.pyplot as plt # fonctions de trace
+
+#equation de la réaction : N2(g) + 3 H2(g) = 2 NH3(g)
+#quantités de matière initiales
+n1=1 ; #en mol
+n2=3 ; #en mol
+n3=0 ; #en mol
+
+T=400; #en kelvin
+K=46.4
+
+#précision sur xi_eq
+eps=1e-3; #en mol
+
+
+def Qr(xi):
+    # renvoie la valeur du quotient reactionnel pour l'avancement ksi a la pression P
+    #et pour des quantites de matiere initiales données
+    return ((n3+2*xi)**2)*((n1+n2+n3)-2*xi)**2/((n1-xi)*(n2-3*xi)**3*P**2)
+
+def xi_eq(P):
+    #renvoie l'avancement de la reaction a l'equilibre en cherchant par dichotomie la solution de l'equation Q - K = 0
+    #on détermine ximax
+    ximax=min(n1,n2/3);
+    # Initialisation des variables
+    xi1 = eps # xi minimal nul 
+    xi2 = ximax-eps # xi maximal = xmax (mais le quotient reactionnel diverge en ximax)
+        
+    while abs(xi2-xi1) > eps: # condition d'arret
+        xi_m=(xi1+xi2)/2 # nouveau milieu de l'intervalle
+        Q = Qr(xi_m) # nouvelle valeur de Q pour le milieu de l'intervalle
+        if Q > K: # si le quotient reactionnel est superieur a K, l'avancement a l'equilibre est a chercher a gauche
+            xi2 = xi_m
+        else:
+            xi1 = xi_m # sinon on cherche a droite    
+    return xi_m
+
+
+# Trace en fonction de la pression entre 0.1 et 50 bar (un point tous les 0.1 bar)
+Pmin=1;
+Pmax=500;
+dP=1;
+Pressions = [P/10 for P in range(Pmin,Pmax,dP)] # liste des abscisses
+alpha = [] # liste vide des ordonnees
+for P in Pressions:
+    alpha.append(xi_eq(P)/n1) # ajout successif des valeurs de l'avancement a l'equilibre dans la liste des ordonnees
+
+plt.plot(Pressions,alpha) # trace du nuage de points
+
+# titres des axes et du graphique
+plt.ylabel("taux de dissociation $\\alpha$")
+plt.xlabel("pression (bar)")
+plt.title("Influence de la pression sur la synthèse de $NH_3$")
+plt.grid()
+plt.show()
+
+# enregistrement du graphique dans un fichier image
+#plt.savefig('NH3_pression.png')
+
+#Tracé en fonction de la composition initiale du mélange
+P=1     # on revient à une pression de 1 bar
+n1=1    # une mole de N2 initialement
+n3=0    # pas d'ammoniac initialement
+
+n2min=1
+n2max=150
+dn2=1
+Liste_n2= [n2/10 for n2 in range(n2min,n2max,dn2)] # liste des abscisses
+Liste_x = [] # liste vide des ordonnees
+
+for n2 in Liste_n2:
+    Liste_x.append((n3+2*xi_eq(P))/(n1+n2+n3-2*xi_eq(P))) # ajout successif des valeurs de l'avancement a l'equilibre dans la liste des ordonnees
+
+plt.plot(Liste_n2,Liste_x) # trace du nuage de points
+
+# titres des axes et du graphique
+plt.ylabel("fraction molaire $x$")
+plt.xlabel("quantité initiale $H_2$ (mol)")
+plt.title("Influence de la composition initiale sur la synthèse de $NH_3$")
+plt.grid()
+plt.show()
+
+# enregistrement du graphique dans un fichier image
+#plt.savefig('NH3_melange.png')

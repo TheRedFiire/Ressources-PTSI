@@ -1,0 +1,143 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import numpy.random as rd
+
+# Il y a quatre grandeurs d'entrée : les quatre positions utiles pour déterminer les deux longueurs
+x_L_1 = 0 # en cm
+x_L_2 = 8.55 # en cm
+L = x_L_2 - x_L_1 # valeur mesurée de L en cm
+
+x_l_1 = 0 # en cm
+x_l_2 = 5.44 # en cm
+l = x_l_2 - x_l_1 # valeur mesurée de l en cm
+
+# on modélise la variabilité des quatre grandeurs d'entrée en donnant
+# - étendue = largeur de l'intervalle où se trouvent les valeurs raisonnablement attribuables à la grandeur
+# - modèle de distribution de ces valeurs (rectangulaire, triangulaire, gaussien)
+# il n'y a pas de « mauvaises réponses », il y a juste des choix raisonnables à effectuer
+# et il faut être capable de les argumenter
+u_x_L2 = 0.1/2/np.sqrt(3) # en cm ; étendue 1 mm = 0,1 cm ; modèle rectangulaire
+u_x_L1 = 0.05/2/np.sqrt(6) # en cm ; étendue 0,5 mm = 0,05 cm ; modèle triangulaire
+u_x_l2 = 0.1/2/np.sqrt(3) # en cm  ; étendue 1 mm = 0,1 cm ; modèle rectangulaire
+u_x_l1 = 0.05/2/np.sqrt(6) # en cm ; étendue 0,5 mm = 0,05 cm ; modèle triangulaire
+
+# L = x_L_2 - x_L_1 et l = x_l_2 - x_l_1 sont des combinaisons linéaires 
+# on utilise la relation de propagation des incertitudes du cours
+u_L = np.sqrt(u_x_L2**2 + u_x_L1**2)
+u_l = np.sqrt(u_x_l2**2 + u_x_l1**2)
+
+# On détermine la valeur mesurée de A
+A = L*l
+
+# A = L*l est un produit 
+# on utilise la relation de propagation des incertitudes du cours
+u_A = A*np.sqrt(u_L**2/L**2 + u_l**2/l**2)
+print('A =', A,'cm² ;','u_A =', u_A, 'cm²')
+
+# on détermine C_L et C_l comme expliqué en Annexe
+# Pour cela on écrit l'expression de u_A**2 :
+# u_A**2 = A**2/L**2 * u_L**2 + A**2/l**2 * u_l**2
+# et on l'identifie à 
+# u_A**2 = C_L**2 * u_L**2 + C_l**2 * u_l**2
+# on trouve
+C_L = A/L
+C_l = A/l
+# finalement les contributions à la variance sont
+C_V_L = C_L**2*u_L**2/u_A**2
+C_V_l = C_l**2*u_l**2/u_A**2
+
+print("C_V_L = ",100*C_V_L,"%","C_V_l =",100*C_V_l,"%")
+
+# nombre de tirages
+n = 1000
+
+# on utilise la bibliothèque numpy.random qu'on appelée rd pour faire des tirages aléatoires
+# on réutilise les modèles de variabilité décrits au début du TP
+# syntaxe pour la distribution triangulaire : 
+# rd.triangular(borne inférieure, centre de l'intervalle, borne supérieure, nombre de tirages)
+x_L_1_MC = x_L_1 + rd.triangular(-0.025,0,0.025,n) # n tirages de x_L_1 selon un modèle triangulaire
+x_L_1_MC_bis = rd.triangular(x_L_1-0.025,x_L_1,x_L_1+0.025,n) # n tirages de x_L_1 selon un modèle triangulaire 
+                                                              # syntaxe alternative
+
+# syntaxe pour la distribution rectangulaire : 
+# rd.uniform(borne inférieure, borne supérieure, nombre de tirages)
+x_L_2_MC = x_L_2 + rd.uniform(-0.05,0.05,n) # n tirages de x_L_2 selon un modèle rectangulaire
+x_L_2_MC_bis = rd.uniform(x_L_2-0.05,x_L_2+0.05,n)  # n tirages de x_L_2 selon un modèle rectangulaire
+                                                    # syntaxe alternative
+
+L_MC = x_L_2_MC-x_L_1_MC # n valeurs de L
+
+# idem pour l
+x_l_1_MC = x_l_1 + rd.triangular(-0.025,0,0.025,n)
+x_l_2_MC = x_l_2 + rd.uniform(-0.05,0.05,n)
+l_MC = x_l_2_MC-x_l_1_MC
+
+A_MC = L_MC*l_MC # n valeurs de A
+
+plt.figure()
+plt.hist(x_l_1_MC,bins='rice')
+plt.ylabel('effectifs')
+plt.xlabel('$x_{l1}$ (cm)')
+plt.title("Distribution des valeurs de $x_{l1}$.\n Méthode de Monte Carlo, modèle triangulaire, 0,5 mm d'étendue.")
+plt.show()
+
+plt.figure()
+plt.hist(x_l_2_MC,bins='rice')
+plt.ylabel('effectifs')
+plt.xlabel('$x_{l2}$ (cm)')
+plt.title("Distribution des valeurs de $x_{l2}$.\n Méthode de Monte Carlo, modèle rectangulaire, 1 mm d'étendue.")
+plt.show()
+
+# Pour ne pas surcharger l'affichage on ne représente que les histogrammes liées à l.
+# ceux liés à L sont tout à faits similaires.
+
+#plt.figure()
+#plt.hist(x_L_1_MC,bins='rice')
+#plt.ylabel('effectifs')
+#plt.xlabel('$x_{L1}$ (cm)')
+#plt.title('x_{L1}')
+#plt.show()
+
+#plt.figure()
+#plt.hist(x_L_2_MC,bins='rice')
+#plt.ylabel('effectifs')
+#plt.xlabel('$x_{L2}$ (cm)')
+#plt.title('x_{L2}')
+#plt.show()
+
+plt.figure()
+plt.hist(L_MC,bins='rice')
+plt.ylabel('effectifs')
+plt.xlabel('$L$ (cm)')
+plt.title('Distributions des valeurs de $L$.')
+plt.show()
+
+plt.figure()
+plt.hist(l_MC,bins='rice')
+plt.ylabel('effectifs')
+plt.xlabel('$\ell$ (cm)')
+plt.title('Distributions des valeurs de $\ell$')
+plt.show()
+
+plt.figure()
+plt.hist(A_MC,bins='rice')
+plt.ylabel('effectifs')
+plt.xlabel('$A$ $(\mathrm{cm}^2)$')
+plt.title('Distributions des valeurs de $A$')
+plt.show()
+
+A_moy = np.mean(A_MC) # valeur moyenne = meilleur estimateur de A
+u_A_MC = np.std(A_MC,ddof=1) # écart-type échantillonnal = incertitude-type sur une valeur de A
+print('A_moy =',A_moy,'cm²','u_A =', u_A_MC,'cm²')
+
+# test de compatibilité entre la valeur mesurée déterminée 
+# grâce aux formules de propagation des incertitudes et la valeur
+# simulée par la méthode de Monte Carlo avec le même modèle
+z_score = np.abs(A-A_moy)/np.sqrt(u_A**2+u_A_MC**2)
+print('z_score =',z_score)
+if z_score < 2:
+    print('Les deux résultats sont compatibles car leur z_score est inférieur à 2.')
+else:
+    print("Les deux résultats ne sont pas compatibles car leur z_score n'est pas inférieur à 2.")
+
+

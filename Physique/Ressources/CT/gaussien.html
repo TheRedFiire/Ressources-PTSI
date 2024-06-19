@@ -1,0 +1,65 @@
+## Bibliothèques utiles
+import numpy as np
+import numpy.random as rd
+import matplotlib.pyplot as plt
+
+## Définitions des paramètres du modèle
+variance = 38**2
+ecart_type_theorique = np.sqrt(variance)
+valeur_centrale = 149
+
+## Nombre de tirages
+nombre_de_tirages = 10000000
+
+## Tirages des valeurs aléatoires selon un modèle rectangulaire
+valeurs = rd.normal(valeur_centrale,ecart_type_theorique,nombre_de_tirages)
+
+## Statistiques sur les valeurs tirées
+valeur_moyenne = np.average(valeurs)
+ecart_type_MC = np.std(valeurs,ddof=1)
+
+## Affichage de quelques résultats
+print("moyenne =",valeur_moyenne)
+print("écart-type MC =",ecart_type_MC, "pour", str(nombre_de_tirages),"tirages")
+print("écart-type théorique =",ecart_type_theorique)
+
+## Création d'un graphique
+plt.figure(figsize=(8,8))
+
+# Titre de la figure
+plt.title("Valeurs théoriques et simulation de Monte Carlo pour un modèle gaussien\n("+\
+          str(nombre_de_tirages)+" tirages)")
+
+## Préparation de l'histogramme et récupérations des données utiles
+n,bins,patches=plt.hist(valeurs,bins='rice',color='blue',histtype='step')
+
+## Tracés des résultats simulés
+# Tracé de la valeur moyenne
+plt.plot((valeur_moyenne,valeur_moyenne), (0,np.max(n)),color='red',label="Valeur moyenne MC")
+
+# Tracés des lignes à plus ou moins un écart-type
+plt.plot((valeur_moyenne+ecart_type_MC,valeur_moyenne+ecart_type_MC), (0,np.max(n)),\
+        color='orange', linestyle='dashed',label="Valeur moyenne plus ou moins un écart-type MC")
+plt.plot((valeur_moyenne-ecart_type_MC,valeur_moyenne-ecart_type_MC), (0,np.max(n)),\
+        color='orange', linestyle='dashed')
+
+## Tracés des résultats théoriques
+# Tracé de la valeur centrale
+plt.plot((valeur_centrale,valeur_centrale), (0,np.max(n)),color='green',label="Valeur centrale")
+
+# Tracés des lignes à plus ou moins un écart-type
+plt.plot((valeur_moyenne+ecart_type_theorique,valeur_moyenne+ecart_type_theorique), (0,np.max(n)),\
+        color='green', linestyle='dotted',label="Valeur centrale théorique plus ou moins un écart-type théorique")
+plt.plot((valeur_moyenne-ecart_type_theorique,valeur_moyenne-ecart_type_theorique), (0,np.max(n)),\
+        color='green', linestyle='dotted')
+
+# Légende, titres des axes
+plt.legend()
+plt.xlabel("Valeurs")
+plt.ylabel("Effectifs")
+
+## En registrement de la figure 
+plt.savefig("../Images/gaussien-"+str(nombre_de_tirages)+".png", dpi = 300)
+
+# Affichage de la figure à l'écran
+plt.show()

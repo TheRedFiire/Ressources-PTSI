@@ -1,0 +1,16 @@
+# import de la bibliothèque de calculs numériques NumPy
+import numpy as np
+
+# On définit les valeurs, en m/s²
+# Attention aux parenthèses et crochets
+# Attention au séparateur décimal (le point)
+liste_des_donnees = np.array([9.68, 9.85, 9.85, 9.77, 9.87, 9.79]) 
+
+# On définit l'écart-type
+# std est pour l'anglais standard deviation, qui signifie écart-type
+# on n'oublie pas le paramètre ddof=1 qui est là pour s'assurer qu'il
+# s'agit bien d'un écart-type échantillonnal (avec une racine de n-1 au
+# dénominateur)
+ecart_type=np.std(liste_des_donnees,ddof=1)
+
+#print(ecart_type) #à décommenter si on veut afficher la valeur
